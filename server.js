@@ -22,7 +22,7 @@ db.once('open', () => console.log('Database connected'));
 const corsOptions = {
   origin: [
     'http://localhost:3000',  // Local frontend URL
-    'http://46.101.252.244',  // Production frontend URL
+    'https://46.101.252.244',  // Production frontend URL
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
