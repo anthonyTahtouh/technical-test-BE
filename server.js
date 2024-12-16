@@ -24,13 +24,15 @@ const corsOptions = {
     'http://localhost:3000',  // Local frontend URL
     'https://46.101.252.244',  // Production frontend URL
   ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,  // Allow credentials (cookies, etc.)
 };
 
 // Middleware
 app.use(express.json());
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // User Schema and Model
