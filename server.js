@@ -20,10 +20,7 @@ db.once('open', () => console.log('Database connected'));
 
 // CORS configuration to allow frontend requests
 const corsOptions = {
-  origin: [
-    'http://localhost:3000',  // Local frontend URL
-    'https://46.101.252.244',  // Production frontend URL
-  ],
+  origin: 'https://46.101.252.244',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,  // Allow credentials (cookies, etc.)
