@@ -105,7 +105,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);  // Decode the token
     const userId = decoded.id;  // Get the user ID from the token
 
-    const sharedLink = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    const sharedLink = `https://46.101.252.244/uploads/${req.file.filename}`;
 
     const file = new File({
       filename: req.file.filename,
@@ -171,5 +171,6 @@ app.get('/view/:id', async (req, res) => {
 });
 
 // Start Server
-app.listen(PORT, '0.0.0.0', () => console.log(`Backend running on http://0.0.0.0:${PORT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`Backend running on https://46.101.252.244:${PORT}`));
+
 
