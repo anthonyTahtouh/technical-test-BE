@@ -30,6 +30,7 @@ const corsOptions = {
 
 // Middleware
 app.use(express.json());
+app.set('trust proxy', true);
 app.use(cors(corsOptions));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
@@ -106,7 +107,9 @@ app.post('/upload', upload.single('file'), async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);  // Decode the token
     const userId = decoded.id;  // Get the user ID from the token
 
-    const sharedLink = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    // const sharedLink = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    const sharedLink = `${req.get('x-forwarded-proto') || req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+
 
     const file = new File({
       filename: req.file.filename,
