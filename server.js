@@ -6,11 +6,18 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const path = require('path');
+const fs = require('fs');
+const https = require('https');
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// SSL certificate and private key paths
+const privateKey = fs.readFileSync('/etc/nginx/ssl/selfsigned.key', 'utf8');  // Replace with your private key path
+const certificate = fs.readFileSync('/etc/nginx/ssl/selfsigned.crt', 'utf8');  // Replace with your certificate path
+const ca = fs.readFileSync('/etc/nginx/ssl/selfsigned.crt', 'utf8');  // Optional, for CA certs if needed
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -46,7 +53,7 @@ const fileSchema = new mongoose.Schema({
   tags: [String],
   views: { type: Number, default: 0 },
   sharedLink: { type: String, unique: true },
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, 
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 });
 const File = mongoose.model('File', fileSchema);
 
@@ -122,8 +129,6 @@ app.post('/upload', upload.single('file'), async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-  
-  
 
 // Fetch Files
 app.get('/files', async (req, res) => {
@@ -139,7 +144,6 @@ app.get('/files', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
 
 // Share File
 app.post('/share/:id', async (req, res) => {
@@ -170,7 +174,8 @@ app.get('/view/:id', async (req, res) => {
   }
 });
 
-// Start Server
-app.listen(PORT, '0.0.0.0', () => console.log(`Backend running on https://46.101.252.244:${PORT}`));
-
-
+// Start HTTPS Server
+https.createServer({ key: privateKey, cert: certificate, ca: ca }, app)
+  .listen(PORT, '0.0.0.0', () => {
+    console.log(`Backend running on https://46.101.252.244:${PORT}`);
+  });
