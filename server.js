@@ -11,6 +11,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+app.set('trust proxy', true);
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -30,7 +31,6 @@ const corsOptions = {
 
 // Middleware
 app.use(express.json());
-app.set('trust proxy', true);
 app.use(cors(corsOptions));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
