@@ -19,20 +19,18 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => console.log('Database connected'));
 
 // CORS configuration to allow frontend requests
-// const corsOptions = {
-//   // origin: 'https://46.101.252.244',
-//   origin: '*',
-//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-//   allowedHeaders: ['Content-Type', 'Authorization'],
-//   credentials: true,  // Allow credentials (cookies, etc.)
-// };
+const corsOptions = {
+  origin: [
+    'http://localhost:3000',  // Local frontend URL
+    'http://46.101.252.244',  // Production frontend URL
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
 
 // Middleware
-// app.options('*', cors(corsOptions));
 app.use(express.json());
-// app.use(cors(corsOptions));
-app.use(cors());
-app.options('*', cors());
+app.use(cors(corsOptions));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // User Schema and Model
@@ -71,9 +69,6 @@ const upload = multer({
     }
   },
 });
-app.get('/test' , async (req, res) => {
-  res.status(200).json({ message: 'ok' });
-});
 
 // Routes
 // Register
@@ -111,7 +106,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);  // Decode the token
     const userId = decoded.id;  // Get the user ID from the token
 
-    const sharedLink = `http://46.101.252.244/uploads/${req.file.filename}`;
+    const sharedLink = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
 
     const file = new File({
       filename: req.file.filename,
@@ -177,4 +172,4 @@ app.get('/view/:id', async (req, res) => {
 });
 
 // Start Server
-app.listen(PORT, '0.0.0.0', () => console.log(`Backend running on http://46.101.252.244:${PORT}`));
+app.listen(PORT, () => console.log(`Backend running on http://localhost:${PORT}`));
