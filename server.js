@@ -71,6 +71,9 @@ const upload = multer({
     }
   },
 });
+app.get('/test' , async (req, res) => {
+  res.status(200).json({ message: 'ok' });
+});
 
 // Routes
 // Register
